@@ -1,10 +1,50 @@
 # Guía para integrar el trabajo del grupo
 
+## Qué compartir con el grupo
+
+Enviar el enlace del repositorio:
+https://github.com/JuanCodeMaster/observabilidad-opentelemetry-ecommerce
+
+Para trabajar, descargar el Word y consultar esta guía. El PDF sirve como referencia de presentación. El ZIP reúne documentos, diagrama y configuraciones.
+
+Los puntos 1 y 2 están desarrollados. El grupo debe elaborar:
+- Punto 3: instrumentación automática frente a manual; tiempo de desarrollo, CPU/memoria y granularidad.
+- Punto 4: head-based frente a tail-based sampling; justificar la tasa para 10k RPS y el impacto en SLIs.
+- Punto 5: atributos semánticos de HTTP, DB, RPC y eventos de negocio.
+Al terminar, integrar las secciones y ajustar el documento completo a 6–8 páginas.
+
 ## Qué está terminado
 - Punto 1: ADR-001 con título, estado, contexto, opciones, decisión y consecuencias.
 - Punto 2: pipeline de tres señales, figura, fuente Mermaid y configuración del Collector.
 - PDF y Word: entrega parcial; no desarrollo de los cinco puntos.
-- Portada: reemplazar nombres, institución, asignatura y docente.
+- Portada: incluye los cinco integrantes del grupo.
+
+## Ojo: dos cosas antes de entregar
+
+1. **La portada está incompleta.** Faltan institución educativa, asignatura y nombre del docente. La portada de estudiante en APA 7 los exige.
+2. **El límite son 6–8 páginas con los CINCO puntos.** Los puntos 1 y 2 ya se comprimieron a 3 páginas de cuerpo para dejar sitio. Reparto previsto:
+
+| Página | Contenido |
+| --- | --- |
+| 1 | Portada |
+| 2 | ADR-001 (punto 1) |
+| 3 | Pipeline y figura (punto 2) |
+| 4 | Configuración del Collector (punto 2) |
+| 5 | Punto 3 |
+| 6 | Punto 4 |
+| 7 | Punto 5 |
+| 8 | Referencias |
+
+Cada punto restante tiene aproximadamente una página. Los YAML completos van como anexo digital, fuera del límite; si el docente exige que los anexos cuenten, hay que confirmarlo con él.
+
+## Qué cambió respecto a la primera versión
+
+- El PDF pasó de 8 a 5 páginas. No se eliminó contenido exigido por el enunciado: el ADR, la figura y la configuración siguen completos.
+- Los dos YAML por nube se sustituyeron en el documento por la Tabla 1 (destino de cada señal por nube). Los archivos completos siguen en el repositorio como anexo.
+- El YAML base del documento usa estilo de flujo compacto para caber en una página. Es equivalente al de `collector-base.yaml`, que conserva el formato extendido; ese es el que se despliega.
+- Se quitó del documento académico la sección interna "Entrega a los compañeros": ese contenido vive en esta guía, no en lo que ve el docente.
+- `arquitectura.mmd` se rehízo para que genere el mismo diagrama que `arquitectura.png`; antes eran distintos.
+
 
 ## Archivos
 - OpenTelemetry_ADR_y_Pipeline.docx y .pdf: documento principal.
@@ -13,7 +53,7 @@
 - collector-base.yaml: recepción mTLS, processors y exportación de trazas.
 - collector-gcp.yaml / collector-aws.yaml: perfiles que complementan la base.
 - collector-gcp-completo.yaml / collector-aws-completo.yaml: configuraciones combinadas; usar una por nube.
-- sdk-ejemplo.env: contrato orientativo del SDK.
+- sdk-ejemplo.env: variables de ejemplo del SDK en la aplicación.
 - VALIDACION.txt: comprobaciones realizadas y pendientes.
 
 ## Acuerdos de integración
@@ -25,7 +65,7 @@ Collector Contrib 0.160.0 para esta propuesta. Especificación consultada: 1.61.
 El YAML no decide sampling. Aplicar la decisión del punto 4 antes de producción.
 
 ## Punto 3: instrumentación automática vs. manual
-Completar tabla: criterio | automática | manual | evidencia.
+El análisis debe contrastar instrumentación automática y manual, justificando cada criterio con evidencia.
 Criterios: tiempo de implementación, mantenimiento, CPU, memoria, arranque y granularidad.
 Confirmar frameworks y bibliotecas soportadas. Proponer spans de negocio para checkout, inventario o pagos.
 No inventar porcentajes de overhead: medir con mismas réplicas, dataset, carga y sampling, después del calentamiento.
@@ -50,7 +90,7 @@ Confirmar si 10k RPS son solicitudes de entrada o llamadas internas. Como hipót
 Fuente: https://opentelemetry.io/docs/concepts/sampling/
 
 ## Punto 5: taxonomía semántica
-Completar tabla: señal | convención/versión | atributo | tipo | ejemplo | obligatoriedad | cardinalidad | restricciones.
+La taxonomía debe especificar para cada señal su convención y versión, atributos, tipos, ejemplos, obligatoriedad, cardinalidad y restricciones.
 Recursos mínimos: service.name, service.namespace, service.version, service.instance.id, deployment.environment.name, cloud.provider, cloud.region.
 Elegir nombres HTTP, DB y RPC de la versión consultada, sin mezclar convenciones antiguas/nuevas.
 Definir eventos de negocio bajo un namespace propio y documentado.

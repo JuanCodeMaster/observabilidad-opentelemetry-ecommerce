@@ -1,6 +1,22 @@
 Validado: sintaxis YAML y referencias de componentes en los dos archivos combinados.
 Configuracion contrastada con documentacion oficial de Collector Contrib 0.160.0.
+Verificado contra la documentacion vigente (sep-2026):
+  - el exportador se llama otlp_grpc (nombre actual; el antiguo era otlp)
+  - resource_to_telemetry_conversion admite included/excluded; enabled es el legacy
+  - existen Collector Contrib 0.160.0 y especificacion OTel 1.61.0
 No se ha ejecutado Collector ni probado autenticacion cloud o carga a 10k RPS.
 Pendiente: validate con el binario elegido y pruebas end-to-end.
 Sampling pendiente del punto 4; no se afirma sostenibilidad del 100 %.
-PDF: 8 paginas; exportado desde el Word editable. Se revisaron paginacion, tablas y ausencia de caracteres de reemplazo.
+
+Revision del 22-sep-2026:
+  - PDF reducido de 8 a 5 paginas (portada + 3 de cuerpo + referencias) para que
+    el documento final con los cinco puntos quepa en el limite de 6-8.
+  - Los dos YAML por nube se sustituyeron en el documento por la Tabla 1; los
+    archivos completos quedan como anexo digital en el repositorio.
+  - El YAML base del documento usa estilo de flujo compacto; es equivalente al
+    de collector-base.yaml, que conserva el formato extendido.
+  - Se elimino la seccion interna "Entrega a los companeros" del documento
+    academico; su contenido vive en GUIA_PARA_COMPANEROS.md.
+  - arquitectura.mmd se rehizo para que coincida con arquitectura.png.
+  - Se restauro sdk-ejemplo.env, que estaba borrado del arbol de trabajo.
+  - PENDIENTE EN LA PORTADA: institucion, asignatura y docente.
