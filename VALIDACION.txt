@@ -1,0 +1,6 @@
+Validado: sintaxis YAML y referencias de componentes en los dos archivos combinados.
+Configuracion contrastada con documentacion oficial de Collector Contrib 0.160.0.
+No se ha ejecutado Collector ni probado autenticacion cloud o carga a 10k RPS.
+Pendiente: validate con el binario elegido y pruebas end-to-end.
+Sampling pendiente del punto 4; no se afirma sostenibilidad del 100 %.
+PDF: 8 paginas; exportado desde el Word editable. Se revisaron paginacion, tablas y ausencia de caracteres de reemplazo.

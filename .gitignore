@@ -1,0 +1,20 @@
+﻿# Archivos locales de revisión
+revision-pagina-*.png
+
+# Temporales de Microsoft Office
+~$*
+*.tmp
+
+# Credenciales y certificados reales
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+
+# Sistema operativo
+Thumbs.db
+.DS_Store

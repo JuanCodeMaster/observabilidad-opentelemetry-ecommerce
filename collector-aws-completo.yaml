@@ -1,0 +1,91 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+        tls:
+          cert_file: /etc/otel/tls/server.crt
+          key_file: /etc/otel/tls/server.key
+          client_ca_file: /etc/otel/tls/ca.crt
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 768
+    spike_limit_mib: 192
+  resource/common:
+    attributes:
+    - key: service.namespace
+      value: ecommerce
+      action: insert
+  batch:
+    timeout: 1s
+    send_batch_size: 512
+    send_batch_max_size: 1024
+exporters:
+  otlp_grpc/jaeger:
+    endpoint: ${env:JAEGER_OTLP_ENDPOINT}
+    tls:
+      ca_file: /etc/otel/tls/jaeger-ca.crt
+      cert_file: /etc/otel/tls/client.crt
+      key_file: /etc/otel/tls/client.key
+    sending_queue:
+      enabled: true
+      queue_size: 1000
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 300s
+  awsemf:
+    region: ${env:AWS_REGION}
+    namespace: Ecommerce
+    log_group_name: /ecommerce/metrics
+    log_stream_name: ${env:COLLECTOR_ID}
+    dimension_rollup_option: NoDimensionRollup
+    retain_initial_value_of_delta_metric: true
+    resource_to_telemetry_conversion:
+      included:
+      - service.name
+      - deployment.environment.name
+    metric_declarations:
+    - dimensions:
+      - - service.name
+        - deployment.environment.name
+      metric_name_selectors:
+      - .*
+  awscloudwatchlogs:
+    region: ${env:AWS_REGION}
+    log_group_name: /ecommerce/application
+    log_stream_name: ${env:COLLECTOR_ID}
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+service:
+  extensions:
+  - health_check
+  pipelines:
+    traces:
+      receivers:
+      - otlp
+      processors:
+      - memory_limiter
+      - resource/common
+      - batch
+      exporters:
+      - otlp_grpc/jaeger
+    metrics:
+      receivers:
+      - otlp
+      processors:
+      - memory_limiter
+      - resource/common
+      - batch
+      exporters:
+      - awsemf
+    logs:
+      receivers:
+      - otlp
+      processors:
+      - memory_limiter
+      - resource/common
+      - batch
+      exporters:
+      - awscloudwatchlogs

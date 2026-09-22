@@ -1,0 +1,22 @@
+exporters:
+  googlecloud:
+    project: ${env:GCP_PROJECT_ID}
+    log:
+      default_log_name: ecommerce
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors:
+        - memory_limiter
+        - resource/common
+        - batch
+      exporters: [googlecloud]
+    logs:
+      receivers: [otlp]
+      processors:
+        - memory_limiter
+        - resource/common
+        - batch
+      exporters: [googlecloud]

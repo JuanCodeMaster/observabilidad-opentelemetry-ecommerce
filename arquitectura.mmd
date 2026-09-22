@@ -1,0 +1,34 @@
+flowchart TB
+  subgraph GCP["GCP / GKE - subconjunto de los 12 microservicios"]
+    AG["Aplicacion e-commerce"] --> SG["OTel SDK: trazas, metricas y logs"]
+    SG -->|"OTLP gRPC / mTLS :4317"| RG
+    subgraph CG["Collector Contrib / gateway GKE / 2 o mas replicas"]
+      RG["receiver: otlp"] --> MG["processor: memory_limiter"]
+      MG --> PG["processor: resource/common"]
+      PG --> BG["processor: batch - instancia por pipeline"]
+      BG -->|"traces"| JG["exporter: otlp_grpc/jaeger"]
+      BG -->|"metrics + logs"| EG["exporter: googlecloud"]
+      HG["extension: health_check :13133"]
+    end
+    EG -->|"metrics"| CM["Cloud Monitoring"]
+    EG -->|"logs"| CL["Cloud Logging"]
+  end
+  subgraph AWS["AWS / ECS - resto de los 12 microservicios"]
+    AA["Aplicacion e-commerce"] --> SA["OTel SDK: trazas, metricas y logs"]
+    SA -->|"OTLP gRPC / mTLS :4317"| RA
+    subgraph CA["Collector Contrib / servicio gateway ECS / 2 o mas tareas"]
+      RA["receiver: otlp"] --> MA["processor: memory_limiter"]
+      MA --> PA["processor: resource/common"]
+      PA --> BA["processor: batch - instancia por pipeline"]
+      BA -->|"traces"| JA["exporter: otlp_grpc/jaeger"]
+      BA -->|"metrics"| EMF["exporter: awsemf"]
+      BA -->|"logs"| LOG["exporter: awscloudwatchlogs"]
+      HA["extension: health_check :13133"]
+    end
+    EMF -->|"EMF via CloudWatch Logs"| CWM["CloudWatch Metrics"]
+    LOG --> CWL["CloudWatch Logs"]
+  end
+  SG <-. "Llamadas de negocio: W3C traceparent / tracestate" .-> SA
+  JG -->|"OTLP gRPC / mTLS"| J["Jaeger compartido - trazas de ambas nubes"]
+  JA -->|"OTLP gRPC / mTLS"| J
+  J --> DB["Almacenamiento persistente de trazas"]
